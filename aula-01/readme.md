@@ -11,7 +11,7 @@ Vamos implementar um sistema de vendas online com a possibilidade de realizar pe
 
 # Considere
 
-Refatorar o algoritmo de validação de cpf
+Refatorar o algoritmo de validação de cpf (OK)
 
 # Sugestões
 
