@@ -3,6 +3,7 @@ package entities
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 )
 
 type Cpf struct {
@@ -33,6 +34,19 @@ func (cpf *Cpf) validate(value string) error {
 	if err != nil {
 		return err
 	}
+	firstDigit, err := cpf.calculateVerifierDigit(value, 10)
+	if err != nil {
+		return err
+	}
+	secondDigit, err := cpf.calculateVerifierDigit(value[:9]+strconv.Itoa(firstDigit), 11)
+	fmt.Println(firstDigit, secondDigit)
+	if err != nil {
+		return err
+	}
+	err = cpf.verifyLastDigits(firstDigit, secondDigit, value)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -57,4 +71,27 @@ func (cpf *Cpf) cleanCpf(value string) (string, error) {
 		return "", err
 	}
 	return regex.ReplaceAllString(value, ""), nil
+}
+
+func (cpf *Cpf) calculateVerifierDigit(value string, factor int) (int, error) {
+	stringArray := []rune(value)
+	sum := 0
+	for i := 0; i <= factor-2; i++ {
+		numberValue, _ := strconv.Atoi(string(stringArray[i]))
+		sum += numberValue * (factor - i)
+	}
+	rest := sum % 11
+	if rest < 2 {
+		return 0, nil
+	}
+	return 11 - rest, nil
+}
+
+func (cpf *Cpf) verifyLastDigits(firstDigit int, lastDigit int, value string) error {
+	lastDigits := value[len(value)-2:]
+	checkString := strconv.Itoa(firstDigit) + strconv.Itoa(lastDigit)
+	if lastDigits == checkString {
+		return nil
+	}
+	return fmt.Errorf("invalid cpf")
 }
