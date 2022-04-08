@@ -39,7 +39,6 @@ func (cpf *Cpf) validate(value string) error {
 		return err
 	}
 	secondDigit, err := cpf.calculateVerifierDigit(value[:9]+strconv.Itoa(firstDigit), 11)
-	fmt.Println(firstDigit, secondDigit)
 	if err != nil {
 		return err
 	}
@@ -58,7 +57,6 @@ func (cpf *Cpf) checkIfDigitsAreAllEqual(value string) error {
 			count++
 		}
 	}
-	fmt.Println(count == len(stringArray)-1)
 	if count == len(stringArray)-1 {
 		return fmt.Errorf("invalid cpf")
 	}

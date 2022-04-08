@@ -2,6 +2,8 @@ package entities
 
 type Order struct {
 	Cpf *Cpf
+	OrderItems []*OrderItem
+	Total float64
 }
 
 func NewOrder(cpfValue string) (*Order, error) {

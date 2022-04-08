@@ -9,8 +9,9 @@ import (
 )
 
 func TestShouldCreateANewItem(t *testing.T) {
-	item := entities.NewItem("1", "Coca-Cola", 3.60)
+	item := entities.NewItem("1", "Coca-Cola", 3.60, "Alguma descrição")
 	require.Equal(t, item.ID, "1")
 	require.Equal(t, item.Name, "Coca-Cola")
 	require.Equal(t, item.Price, 3.60)
+	require.Equal(t, item.Description, "Alguma descrição")
 }
