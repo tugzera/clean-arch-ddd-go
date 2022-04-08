@@ -15,7 +15,8 @@ func TestShouldNotCreateAnOrderWithInvalidCpf(t *testing.T) {
 	orderItem := entities.NewOrderItem(item, 2)
 	orderItem2 := entities.NewOrderItem(item2, 2)
 	orderItem3 := entities.NewOrderItem(item3, 2)
-	_, err := entities.NewOrder("013.213.412-75", []*entities.OrderItem{orderItem, orderItem2, orderItem3})
+	cupom := entities.NewCupom(0)
+	_, err := entities.NewOrder("013.213.412-75", []*entities.OrderItem{orderItem, orderItem2, orderItem3}, cupom)
 	require.Error(t, err)
 }
 
@@ -26,8 +27,13 @@ func TestShouldCreateAnOrderWithValidCPf(t *testing.T) {
 	orderItem := entities.NewOrderItem(item, 2)
 	orderItem2 := entities.NewOrderItem(item2, 1)
 	orderItem3 := entities.NewOrderItem(item3, 4)
-	order, err := entities.NewOrder("039.187.211-75", []*entities.OrderItem{orderItem, orderItem2, orderItem3})
+	cupom := entities.NewCupom(5)
+	order, err := entities.NewOrder("039.187.211-75", []*entities.OrderItem{orderItem, orderItem2, orderItem3}, cupom)
 	require.Nil(t, err)
 	require.Equal(t, order.Cpf.Value, "03918721175")
-	require.Equal(t, order.Total, (item.Price*2)+(item2.Price*1)+(item3.Price*4))
+	total := (item.Price * 2) + (item2.Price * 1) + (item3.Price * 4)
+	require.Equal(t, order.Total, total)
+	discount := (total * 5) / 100
+	require.Equal(t, order.DiscountValue, discount)
+	require.Equal(t, order.FinalAmount, total-discount)
 }
